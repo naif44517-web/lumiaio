@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi - تسجيل الدخول</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d0f;
+            --emerald: #1a5c4c;
+            --emerald-light: #2a7a66;
+            --sand: #c9b896;
+            --gold: #b8975c;
+            --text-white: #f4f1eb;
+            --text-soft: #c4bfb4;
+            --text-muted: #8a857a;
+            --error: #e74c3c;
+            --success: #2ecc71;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .glow-1 { top: -200px; right: -200px; background: var(--emerald); }
+        .glow-2 { bottom: -200px; left: -200px; background: var(--gold); }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--sand) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-soft);
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            font-size: 16px;
+            font-family: 'Tajawal', sans-serif;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-white);
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--emerald);
+            background: rgba(26, 92, 76, 0.1);
+        }
+        .form-group input::placeholder { color: var(--text-muted); }
+
+        .btn {
+            width: 100%;
+            padding: 1.1rem;
+            font-size: 1.1rem;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(26, 92, 76, 0.3);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .message.error {
+            display: block;
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        .message.success {
+            display: block;
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .forgot-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .forgot-link a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .forgot-link a:hover {
+            color: var(--sand);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .register-link a {
+            color: var(--sand);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container { padding: 2rem 1.5rem; }
+            .logo { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="auth-container">
+        <div class="logo">LUMI</div>
+        <p class="subtitle">سجل دخولك وارجع لسكرتيرك</p>
+
+        <div id="message" class="message"></div>
+
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="login-email" placeholder="email@example.com" required>
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn">دخول</button>
+        </form>
+
+        <div class="forgot-link">
+            <a href="#" onclick="showForgotPassword(); return false;">نسيت كلمة المرور؟</a>
+        </div>
+
+        <!-- Forgot Password Modal -->
+        <div id="forgotModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+            <div style="background: var(--bg-deep); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%;">
+                <h3 style="margin-bottom: 1rem; color: var(--sand);">استعادة كلمة المرور</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">أدخل بريدك الإلكتروني وسنرسل لك رابط استعادة كلمة المرور</p>
+                <input type="email" id="forgot-email" placeholder="email@example.com" style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-white); margin-bottom: 1rem; font-family: 'Tajawal', sans-serif;">
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="sendResetLink()" class="btn" style="flex: 1; padding: 0.75rem; background: var(--emerald); border: none; border-radius: 8px; color: white; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 1rem;">إرسال</button>
+                    <button onclick="closeForgotModal()" style="flex: 1; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-soft); cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 1rem;">إلغاء</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="register-link">
+            ما عندك حساب؟ <a href="auth.html">سجل الآن</a>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://api.lumiaio.com/api';
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch(API_URL + '/signin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('lumi_token', data.token);
+                    localStorage.setItem('lumi_user', JSON.stringify(data.user));
+                    showMessage('تم تسجيل الدخول ✓', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1000);
+                } else {
+                    showMessage(data.error || 'البريد أو كلمة المرور غير صحيحة', 'error');
+                }
+            } catch (err) {
+                showMessage('خطأ في الاتصال بالسيرفر', 'error');
+            }
+        }
+
+        // Forgot Password Modal Functions
+        function showForgotPassword() {
+            document.getElementById('forgotModal').style.display = 'flex';
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgotModal').style.display = 'none';
+            document.getElementById('forgot-email').value = '';
+        }
+
+        function sendResetLink() {
+            const email = document.getElementById('forgot-email').value.trim();
+            
+            if (!email) {
+                alert('الرجاء إدخال البريد الإلكتروني');
+                return;
+            }
+
+            // Redirect to reset password page with email prefilled
+            window.location.href = '/reset-password.html?email=' + encodeURIComponent(email);
+        }
+
+        // Check if already logged in
+        if (localStorage.getItem('lumi_token')) {
+            window.location.href = '/dashboard.html';
+        }
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    </script>
+</body>
+</html>

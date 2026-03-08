@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi - الإعدادات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d0f;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --emerald: #1a5c4c;
+            --emerald-light: #2a7a66;
+            --sand: #c9b896;
+            --gold: #b8975c;
+            --text-white: #f4f1eb;
+            --text-soft: #c4bfb4;
+            --text-muted: #8a857a;
+            --error: #e74c3c;
+            --success: #2ecc71;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-white);
+            min-height: 100vh;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        .glow-1 { top: -200px; right: -200px; background: var(--emerald); }
+        .glow-2 { bottom: -200px; left: -200px; background: var(--gold); }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--bg-deep);
+            z-index: 100;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-soft);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+        .back-btn:hover { color: var(--text-white); }
+        .page-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--sand) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.1em;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Section */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-icon {
+            font-size: 1.3rem;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        /* Setting Item */
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s;
+        }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-item:hover { background: rgba(255,255,255,0.02); }
+        .setting-item.clickable { cursor: pointer; }
+
+        .setting-label {
+            color: var(--text-soft);
+            font-size: 0.95rem;
+        }
+        .setting-value {
+            color: var(--text-white);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .setting-value .arrow {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 28px;
+        }
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 28px;
+            transition: 0.3s;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            right: 3px;
+            bottom: 3px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle input:checked + .toggle-slider {
+            background: var(--emerald);
+        }
+        .toggle input:checked + .toggle-slider:before {
+            transform: translateX(-22px);
+            background: var(--text-white);
+        }
+
+        /* Input in settings */
+        .setting-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            color: var(--text-white);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+            width: 180px;
+            text-align: left;
+            direction: ltr;
+        }
+        .setting-input:focus {
+            outline: none;
+            border-color: var(--emerald);
+        }
+
+        /* Select */
+        .setting-select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            color: var(--text-white);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .setting-select:focus {
+            outline: none;
+            border-color: var(--emerald);
+        }
+
+        /* Coming Soon Badge */
+        .coming-soon-badge {
+            background: rgba(184, 151, 92, 0.15);
+            color: var(--gold);
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Danger Button */
+        .danger-item {
+            color: var(--error);
+        }
+        .danger-item .setting-label {
+            color: var(--error);
+        }
+
+        /* Message */
+        .message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .message.show { opacity: 1; }
+        .message.success {
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+        }
+        .message.error {
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal {
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal h3 {
+            margin-bottom: 1rem;
+            color: var(--error);
+        }
+        .modal p {
+            color: var(--text-soft);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .modal-btns {
+            display: flex;
+            gap: 1rem;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 0.9rem;
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-btn.cancel {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-soft);
+        }
+        .modal-btn.danger {
+            background: var(--error);
+            border: none;
+            color: white;
+        }
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .header { padding: 1rem; }
+            .main { padding: 1rem; }
+            .setting-item { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 0.75rem; 
+            }
+            .setting-input { width: 100%; }
+        }
+
+        /* Save Button */
+        #save-btn {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2.5rem;
+            background: var(--emerald);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(26, 92, 76, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        #save-btn:hover {
+            background: var(--emerald-light);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 25px rgba(26, 92, 76, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <header class="header">
+        <div class="header-right">
+            <button class="back-btn" onclick="goBack()">→</button>
+            <span class="page-title">الإعدادات</span>
+        </div>
+        <div class="logo">LUMI</div>
+    </header>
+
+    <main class="main">
+        <!-- Account Info -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📋</span>
+                <span class="section-title">معلومات الحساب</span>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">الاسم</span>
+                <input type="text" class="setting-input" id="user-name" style="text-align:right; direction:rtl;">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">البريد الإلكتروني</span>
+                <span class="setting-value" id="user-email">—</span>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">رقم الجوال</span>
+                <span class="setting-value" id="user-phone">—</span>
+            </div>
+            <div class="setting-item clickable" onclick="showChangePassword()">
+                <span class="setting-label">تغيير كلمة المرور</span>
+                <span class="setting-value"><span class="arrow">←</span></span>
+            </div>
+        </div>
+
+        <!-- Assistant Settings -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🤖</span>
+                <span class="section-title">إعدادات المساعد</span>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">اسم السكرتير</span>
+                <input type="text" class="setting-input" id="assistant-name" style="text-align:right; direction:rtl;">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">يناديك</span>
+                <input type="text" class="setting-input" id="user-nickname" style="text-align:right; direction:rtl;">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">اللغة</span>
+                <select class="setting-select" id="user-language">
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Subscription -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">💳</span>
+                <span class="section-title">الاشتراك</span>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">الباقة الحالية</span>
+                <span class="coming-soon-badge">قريباً...</span>
+            </div>
+        </div>
+
+        <!-- Privacy -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🔒</span>
+                <span class="section-title">الخصوصية</span>
+            </div>
+            <div class="setting-item clickable danger-item" onclick="showDeleteModal()">
+                <span class="setting-label">حذف الحساب</span>
+                <span class="setting-value"><span class="arrow">←</span></span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Message -->
+    <div id="message" class="message"></div>
+
+    <!-- Save Button (appears on change) -->
+    <button id="save-btn" onclick="saveSettings()" style="display: none;">
+        حفظ التغييرات ✓
+    </button>
+
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h3>⚠️ حذف الحساب</h3>
+            <p>هل أنت متأكد من حذف حسابك؟<br>سيتم حذف جميع بياناتك نهائياً ولا يمكن استرجاعها.</p>
+            <div class="modal-btns">
+                <button class="modal-btn cancel" onclick="hideDeleteModal()">إلغاء</button>
+                <button class="modal-btn danger" onclick="deleteAccount()">حذف نهائياً</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://api.lumiaio.com/api';
+        let user = JSON.parse(localStorage.getItem('lumi_user') || '{}');
+        const token = localStorage.getItem('lumi_token');
+
+        // Check auth
+        if (!token && !user.name) {
+            window.location.href = '/login.html';
+        }
+
+        // Load user data
+        function loadUserData() {
+            document.getElementById('user-name').value = user.name || '';
+            document.getElementById('user-email').textContent = user.email || '—';
+            document.getElementById('user-phone').textContent = user.phone || '—';
+            document.getElementById('assistant-name').value = user.secretary_name_ar || user.secretary_name_en || 'سعود';
+            document.getElementById('user-nickname').value = user.nickname || '';
+            document.getElementById('user-language').value = user.language || 'ar';
+
+        }
+
+        loadUserData();
+
+        // Track changes and show save button
+        let hasChanges = false;
+        document.querySelectorAll('#user-name, #assistant-name, #user-nickname, #user-language').forEach(el => {
+            el.addEventListener('input', () => {
+                hasChanges = true;
+                document.getElementById('save-btn').style.display = 'block';
+            });
+            el.addEventListener('change', () => {
+                hasChanges = true;
+                document.getElementById('save-btn').style.display = 'block';
+            });
+        });
+
+        async function saveSettings() {
+            user.name = document.getElementById('user-name').value.trim();
+            user.secretary_name_ar = document.getElementById('assistant-name').value.trim() || 'سعود';
+            user.nickname = document.getElementById('user-nickname').value.trim();
+            user.language = document.getElementById('user-language').value;
+
+
+            localStorage.setItem('lumi_user', JSON.stringify(user));
+
+            try {
+                await fetch(API_URL + '/settings', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(user)
+                });
+            } catch (err) {}
+
+            // Hide save button and reset change tracker
+            hasChanges = false;
+            document.getElementById('save-btn').style.display = 'none';
+            showMessage('تم الحفظ ✓', 'success');
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type + ' show';
+            setTimeout(() => {
+                msg.classList.remove('show');
+            }, 2000);
+        }
+
+        function goBack() {
+            window.location.href = '/dashboard.html';
+        }
+
+        function showChangePassword() {
+            showMessage('قريباً...', 'success');
+        }
+
+        function showDeleteModal() {
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        async function deleteAccount() {
+            try {
+                await fetch(API_URL + '/delete-account', {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+            } catch (err) {}
+
+            localStorage.clear();
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>

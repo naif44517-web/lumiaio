@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi - Your AI Secretary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&family=Tajawal:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d0f;
+            --emerald: #1a5c4c;
+            --emerald-light: #2a7a66;
+            --sand: #c9b896;
+            --sand-muted: #a69d88;
+            --gold: #b8975c;
+            --text-white: #f4f1eb;
+            --text-soft: #c4bfb4;
+            --text-muted: #8a857a;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-white);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        body[dir="rtl"] {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .hero-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: 
+                linear-gradient(180deg, 
+                    var(--bg-deep) 0%, 
+                    rgba(26, 92, 76, 0.03) 50%, 
+                    var(--bg-deep) 100%),
+                radial-gradient(circle at 30% 40%, rgba(26, 92, 76, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(184, 151, 92, 0.05) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: flex;
+            gap: 0.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.5rem;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .lang-btn:hover {
+            background: var(--glass-hover);
+            color: var(--text-white);
+        }
+
+        .lang-btn.active {
+            background: var(--emerald);
+            color: var(--text-white);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 0;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--sand) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-content p {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            color: var(--text-soft);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-light) 100%);
+            color: var(--text-white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(26, 92, 76, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass-hover);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 6rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+            color: var(--text-white);
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--text-soft);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            background: var(--glass-hover);
+            border-color: var(--emerald);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-white);
+        }
+
+        .service-card p {
+            color: var(--text-soft);
+            font-size: 1rem;
+        }
+
+        /* Scenarios Section */
+        .scenarios {
+            padding: 6rem 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(26, 92, 76, 0.05) 50%, transparent 100%);
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .scenario-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        .scenario-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-message {
+            font-size: 1.1rem;
+            color: var(--text-white);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .scenario-result {
+            color: var(--text-soft);
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 4rem 0 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 6rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-soft);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lang-switcher {
+                top: 1rem;
+                right: 1rem;
+                padding: 0.4rem;
+            }
+
+            .lang-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Hide/Show based on language */
+        [data-lang]:not([data-lang=""]) {
+            display: none;
+        }
+
+        body[lang="en"] [data-lang="en"],
+        body[lang="ar"] [data-lang="ar"] {
+            display: block !important;
+        }
+
+        body[lang="en"] [data-lang="en"].inline,
+        body[lang="ar"] [data-lang="ar"].inline {
+            display: inline !important;
+        }
+    </style>
+</head>
+<body lang="en" dir="ltr">
+    <div class="hero-background"></div>
+
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="switchLang('en')" id="btn-en">
+            EN
+        </button>
+        <button class="lang-btn" onclick="switchLang('ar')" id="btn-ar">
+            AR
+        </button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>
+                    <span data-lang="en">LUMI</span>
+                    <span data-lang="ar">لومي</span>
+                </h1>
+                <p data-lang="en">Your AI secretary. Handles tasks, summaries, and planning—right in your messaging app.</p>
+                <p data-lang="ar">سكرتيرك الذكي. ينجز المهام، يلخص المعلومات، وينظم وقتك — كل شي برسالة وحدة.</p>
+                
+                <div class="cta-buttons">
+                    <a href="#services" class="btn btn-primary">
+                        <span data-lang="en">Explore Services</span>
+                        <span data-lang="ar">شوف الخدمات</span>
+                    </a>
+                    <a href="https://wa.me/14247880551" class="btn btn-secondary">
+                        <span data-lang="en">Try on WhatsApp</span>
+                        <span data-lang="ar">جرب على واتساب</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-lang="en">What Lumi Does</h2>
+                <h2 data-lang="ar">وش يسويه لومي</h2>
+                <p data-lang="en">Professional summaries, smart planning, instant answers</p>
+                <p data-lang="ar">تلخيص احترافي، تنظيم ذكي، إجابات فورية</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📝</div>
+                    <h3 data-lang="en">Word Summaries</h3>
+                    <h3 data-lang="ar">تلخيص Word احترافي</h3>
+                    <p data-lang="en">Professional summaries in seconds</p>
+                    <p data-lang="ar">ملخصات احترافية في ثواني</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3 data-lang="en">Excel Data Summaries</h3>
+                    <h3 data-lang="ar">تلخيص Excel احترافي</h3>
+                    <p data-lang="en">Organized data, clean tables</p>
+                    <p data-lang="ar">بيانات ملخصة، جداول منظمة</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">📽️</div>
+                    <h3 data-lang="en">PowerPoint Summaries</h3>
+                    <h3 data-lang="ar">عروض PowerPoint ملخصة</h3>
+                    <p data-lang="en">Professional summary presentations</p>
+                    <p data-lang="ar">ملخصات تقديمية احترافية</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">⏰</div>
+                    <h3 data-lang="en">Reminders</h3>
+                    <h3 data-lang="ar">تذكيرات</h3>
+                    <p data-lang="en">Set it. Lumi handles the rest.</p>
+                    <p data-lang="ar">حدد الوقت. لومي يتكفل بالباقي.</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🍽️</div>
+                    <h3 data-lang="en">Restaurant Booking</h3>
+                    <h3 data-lang="ar">حجز مطاعم</h3>
+                    <p data-lang="en">Books tables via WhatsApp or call</p>
+                    <p data-lang="ar">يحجز لك عن طريق واتساب أو اتصال</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">✂️</div>
+                    <h3 data-lang="en">Salon Booking</h3>
+                    <h3 data-lang="ar">حجز صالونات</h3>
+                    <p data-lang="en">Haircut, styling, spa—all booked</p>
+                    <p data-lang="ar">قص شعر، تسريحة، سبا — كله محجوز</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">📍</div>
+                    <h3 data-lang="en">Place Search</h3>
+                    <h3 data-lang="ar">البحث عن أماكن</h3>
+                    <p data-lang="en">Finds cafes, restaurants, rated & close</p>
+                    <p data-lang="ar">يلقى كافيهات، مطاعم، بالتقييمات والقرب</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🎬</div>
+                    <h3 data-lang="en">Movies & Shows</h3>
+                    <h3 data-lang="ar">أفلام ومسلسلات</h3>
+                    <p data-lang="en">Recommendations with ratings</p>
+                    <p data-lang="ar">اقتراحات مع التقييمات</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">💪</div>
+                    <h3 data-lang="en">Personal Trainer</h3>
+                    <h3 data-lang="ar">مدرب شخصي</h3>
+                    <p data-lang="en">Workout plans & exercise guides</p>
+                    <p data-lang="ar">برامج تمارين وشروحات</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🥗</div>
+                    <h3 data-lang="en">Nutrition Plans</h3>
+                    <h3 data-lang="ar">خطط تغذية</h3>
+                    <p data-lang="en">Calorie tracking & macros</p>
+                    <p data-lang="ar">حساب السعرات والماكروز</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🌤️</div>
+                    <h3 data-lang="en">Weather</h3>
+                    <h3 data-lang="ar">الطقس</h3>
+                    <p data-lang="en">Current conditions & forecasts</p>
+                    <p data-lang="ar">حالة الطقس والتوقعات</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🔍</div>
+                    <h3 data-lang="en">Web Search</h3>
+                    <h3 data-lang="ar">بحث الإنترنت</h3>
+                    <p data-lang="en">Fast answers, updated info</p>
+                    <p data-lang="ar">إجابات سريعة، معلومات محدثة</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">📰</div>
+                    <h3 data-lang="en">News</h3>
+                    <h3 data-lang="ar">الأخبار</h3>
+                    <p data-lang="en">Latest news by topic</p>
+                    <p data-lang="ar">آخر الأخبار حسب الموضوع</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🕌</div>
+                    <h3 data-lang="en">Prayer Times</h3>
+                    <h3 data-lang="ar">أوقات الصلاة</h3>
+                    <p data-lang="en">Daily prayer schedule by location</p>
+                    <p data-lang="ar">مواقيت الصلاة حسب موقعك</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🎙️</div>
+                    <h3 data-lang="en">Voice Messages</h3>
+                    <h3 data-lang="ar">رسائل صوتية</h3>
+                    <p data-lang="en">Transcribes & responds to voice</p>
+                    <p data-lang="ar">يفهم الصوت ويرد صوت</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scenarios Section -->
+    <section class="scenarios">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-lang="en">Your Day, Organized</h2>
+                <h2 data-lang="ar">يومك، مرتب</h2>
+                <p data-lang="en">Real examples from daily use</p>
+                <p data-lang="ar">أمثلة حقيقية من الاستخدام اليومي</p>
+            </div>
+
+            <div class="scenarios-grid">
+                <div class="scenario-card">
+                    <div class="scenario-emoji">📊</div>
+                    <div class="scenario-content">
+                        <div class="scenario-message" data-lang="en">"Summarize marketing basics in PowerPoint"</div>
+                        <div class="scenario-message" data-lang="ar">"لخص لي معلومات عن التسويق في PowerPoint"</div>
+                        <div class="scenario-result" data-lang="en">→ Professional summary ready in 1 minute</div>
+                        <div class="scenario-result" data-lang="ar">→ تلخيص احترافي جاهز في دقيقة</div>
+                    </div>
+                </div>
+
+                <div class="scenario-card">
+                    <div class="scenario-emoji">🍔</div>
+                    <div class="scenario-content">
+                        <div class="scenario-message" data-lang="en">"Where's the best burger place nearby?"</div>
+                        <div class="scenario-message" data-lang="ar">"وين أفضل مطعم برجر قريب؟"</div>
+                        <div class="scenario-result" data-lang="en">→ Top 3 options with ratings</div>
+                        <div class="scenario-result" data-lang="ar">→ أفضل ٣ خيارات مع التقييمات</div>
+                    </div>
+                </div>
+
+                <div class="scenario-card">
+                    <div class="scenario-emoji">⏰</div>
+                    <div class="scenario-content">
+                        <div class="scenario-message" data-lang="en">"Remind me about the meeting tomorrow at 9"</div>
+                        <div class="scenario-message" data-lang="ar">"ذكرني بالاجتماع بكرا الساعة ٩"</div>
+                        <div class="scenario-result" data-lang="en">→ Done. You'll get notified.</div>
+                        <div class="scenario-result" data-lang="ar">→ تمام. بأذكرك في وقتها.</div>
+                    </div>
+                </div>
+
+                <div class="scenario-card">
+                    <div class="scenario-emoji">🎬</div>
+                    <div class="scenario-content">
+                        <div class="scenario-message" data-lang="en">"Good action movie?"</div>
+                        <div class="scenario-message" data-lang="ar">"ابي فيلم أكشن حلو"</div>
+                        <div class="scenario-result" data-lang="en">→ 5 suggestions with scores</div>
+                        <div class="scenario-result" data-lang="ar">→ ٥ اقتراحات مع التقييمات</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="mailto:team@lumiaio.com">team@lumiaio.com</a>
+                <a href="https://wa.me/14247880551">
+                    <span data-lang="en">WhatsApp</span>
+                    <span data-lang="ar">واتساب</span>
+                </a>
+                <a href="https://t.me/mueen_sa_bot">
+                    <span data-lang="en">Telegram</span>
+                    <span data-lang="ar">تيليجرام</span>
+                </a>
+            </div>
+            <p class="footer-copy">© 2026 Lumi. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function switchLang(lang) {
+            const body = document.body;
+            const btnEn = document.getElementById('btn-en');
+            const btnAr = document.getElementById('btn-ar');
+
+            if (lang === 'ar') {
+                body.setAttribute('lang', 'ar');
+                body.setAttribute('dir', 'rtl');
+                btnAr.classList.add('active');
+                btnEn.classList.remove('active');
+            } else {
+                body.setAttribute('lang', 'en');
+                body.setAttribute('dir', 'ltr');
+                btnEn.classList.add('active');
+                btnAr.classList.remove('active');
+            }
+
+            // Save preference
+            localStorage.setItem('lumi-lang', lang);
+        }
+
+        // Load saved language preference
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('lumi-lang');
+            if (savedLang && savedLang === 'ar') {
+                switchLang('ar');
+            }
+        });
+    </script>
+</body>
+</html>

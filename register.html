@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi - سجّل الآن</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d0f;
+            --emerald: #1a5c4c;
+            --emerald-light: #2a7a66;
+            --sand: #c9b896;
+            --gold: #b8975c;
+            --text-white: #f4f1eb;
+            --text-soft: #c4bfb4;
+            --text-muted: #8a857a;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-1 { top: -200px; right: -200px; background: var(--emerald); }
+        .glow-2 { bottom: -200px; left: -200px; background: var(--gold); }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--sand) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .form-container {
+            position: relative;
+            z-index: 1;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            backdrop-filter: blur(20px);
+        }
+
+        .form-header { text-align: center; margin-bottom: 2rem; }
+        .form-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .form-subtitle { font-size: 1rem; color: var(--text-muted); }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-size: 0.95rem; color: var(--text-soft); margin-bottom: 0.5rem; }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            font-size: 1.1rem;
+            font-family: 'Tajawal', sans-serif;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-white);
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--emerald);
+            background: rgba(26, 92, 76, 0.1);
+        }
+        .form-input::placeholder { color: var(--text-muted); }
+
+        .phone-wrapper { display: flex; gap: 0.75rem; }
+        .country-code { width: 100px; text-align: center; }
+        .phone-number { flex: 1; }
+
+        /* Verify Method Selection */
+        .verify-selection { display: flex; gap: 1rem; margin-top: 0.5rem; }
+        .verify-option {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .verify-option:hover { border-color: rgba(255, 255, 255, 0.2); }
+        .verify-option.selected { border-color: var(--emerald); background: rgba(26, 92, 76, 0.15); }
+        .verify-option input { display: none; }
+        .verify-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .verify-name { font-size: 0.85rem; color: var(--text-soft); }
+
+        /* Platform Selection */
+        .platform-selection { display: flex; gap: 1rem; margin-top: 0.5rem; }
+        .platform-option {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .platform-option:hover { border-color: rgba(255, 255, 255, 0.2); }
+        .platform-option.selected { border-color: var(--emerald); background: rgba(26, 92, 76, 0.15); }
+        .platform-option input { display: none; }
+        .platform-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .platform-name { font-size: 0.9rem; color: var(--text-soft); }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.1rem;
+            font-size: 1.2rem;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(26, 92, 76, 0.3); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+        .message.success { background: rgba(26, 92, 76, 0.2); border: 1px solid var(--emerald); color: var(--emerald-light); display: block; }
+        .message.error { background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; color: #e74c3c; display: block; }
+
+        .back-link {
+            margin-top: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .back-link:hover { color: var(--sand); }
+
+        /* OTP Input */
+        .otp-input {
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: 0.5em;
+            font-weight: bold;
+        }
+
+        .resend-link {
+            color: var(--sand);
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .resend-link:hover { text-decoration: underline; }
+
+        /* Steps indicator */
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .step.active { background: var(--emerald); color: white; }
+        .step.done { background: var(--gold); color: var(--bg-deep); }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 480px) {
+            .form-container { padding: 2rem 1.5rem; }
+            .phone-wrapper { flex-direction: column; }
+            .country-code { width: 100%; }
+            .platform-selection, .verify-selection { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="form-container">
+        <div class="form-header">
+            <div class="logo">LUMI</div>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps">
+            <div class="step active" id="step1">1</div>
+            <div class="step" id="step2">2</div>
+            <div class="step" id="step3">3</div>
+        </div>
+
+        <!-- Step 1: Registration Form -->
+        <div id="registerStep">
+            <h1 class="form-title">سجّل الآن</h1>
+            <p class="form-subtitle" style="margin-bottom: 2rem;">خطوة واحدة وتبدأ مع سكرتيرك الذكي</p>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">الاسم</label>
+                    <input type="text" class="form-input" id="name" placeholder="اسمك الكريم" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">رقم الجوال</label>
+                    <div class="phone-wrapper">
+                        <input type="text" class="form-input country-code" id="countryCode" value="+966">
+                        <input type="tel" class="form-input phone-number" id="phone" placeholder="5XXXXXXXX" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" class="form-input" id="email" placeholder="email@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">طريقة التحقق</label>
+                    <div class="verify-selection">
+                        <label class="verify-option selected" id="verifyEmail">
+                            <input type="radio" name="verifyMethod" value="email" checked>
+                            <div class="verify-icon">📧</div>
+                            <div class="verify-name">إيميل</div>
+                        </label>
+                        <label class="verify-option" id="verifySms">
+                            <input type="radio" name="verifyMethod" value="sms">
+                            <div class="verify-icon">📱</div>
+                            <div class="verify-name">رسالة SMS</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">وين تبي تستخدم Lumi؟</label>
+                    <div class="platform-selection">
+                        <label class="platform-option selected" id="whatsappOption">
+                            <input type="radio" name="platform" value="whatsapp" checked>
+                            <div class="platform-icon">💬</div>
+                            <div class="platform-name">واتساب</div>
+                        </label>
+                        <label class="platform-option" id="telegramOption">
+                            <input type="radio" name="platform" value="telegram">
+                            <div class="platform-icon">✈️</div>
+                            <div class="platform-name">تيليجرام</div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">إرسال كود التحقق</button>
+                <div class="message" id="message"></div>
+            </form>
+        </div>
+
+        <!-- Step 2: OTP Verification -->
+        <div id="verifyStep" class="hidden">
+            <h1 class="form-title">أدخل كود التحقق</h1>
+            <p class="form-subtitle" id="otpSentTo" style="margin-bottom: 2rem;"></p>
+
+            <form id="verifyForm">
+                <div class="form-group">
+                    <input type="text" class="form-input otp-input" id="otpCode" placeholder="000000" maxlength="6" required>
+                </div>
+
+                <button type="submit" class="submit-btn" id="verifyBtn">تحقق</button>
+                <div class="message" id="verifyMessage"></div>
+
+                <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted);">
+                    ما وصلك الكود؟ 
+                    <span class="resend-link" id="resendBtn">إعادة إرسال</span>
+                </p>
+            </form>
+        </div>
+
+        <!-- Step 3: Personalization -->
+        <div id="personalizeStep" class="hidden">
+            <h1 class="form-title">خطوة أخيرة! 🎉</h1>
+            <p class="form-subtitle" style="margin-bottom: 2rem;">خصّص سكرتيرك الذكي</p>
+
+            <form id="personalizeForm">
+                <div class="form-group">
+                    <label class="form-label">وش حاب سكرتيرك يناديك؟</label>
+                    <input type="text" class="form-input" id="nickname" placeholder="مثال: أبو سعود، يا بطل، حبيبي..." required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">وش حاب يكون اسم سكرتيرك؟</label>
+                    <input type="text" class="form-input" id="secretaryName" placeholder="مثال: لومي، سارة، خالد..." required>
+                </div>
+
+                <button type="submit" class="submit-btn" id="personalizeBtn">يلا نبدأ! 🚀</button>
+                <div class="message" id="personalizeMessage"></div>
+            </form>
+        </div>
+    </div>
+
+    <a href="main_site.html" class="back-link">← الرجوع للصفحة الرئيسية</a>
+
+    <script>
+        // API Base URL
+        const API_URL = 'https://api.lumiaio.com';
+
+        // Store form data
+        let formData = {};
+
+        // Selection handlers
+        document.querySelectorAll('.verify-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.verify-option').forEach(x => x.classList.remove('selected'));
+                opt.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.platform-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.platform-option').forEach(x => x.classList.remove('selected'));
+                opt.classList.add('selected');
+            });
+        });
+
+        // Step 1: Registration
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const message = document.getElementById('message');
+            
+            formData = {
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('countryCode').value + document.getElementById('phone').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                platform: document.querySelector('input[name="platform"]:checked').value,
+                verify_method: document.querySelector('input[name="verifyMethod"]:checked').value
+            };
+            
+            // Validation
+            if (!formData.name || !formData.phone || !formData.email) {
+                message.textContent = 'الرجاء تعبئة جميع الحقول';
+                message.className = 'message error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'جاري الإرسال...';
+            message.className = 'message';
+
+            try {
+                const response = await fetch(`${API_URL}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Move to step 2
+                    document.getElementById('registerStep').classList.add('hidden');
+                    document.getElementById('verifyStep').classList.remove('hidden');
+                    document.getElementById('step1').classList.remove('active');
+                    document.getElementById('step1').classList.add('done');
+                    document.getElementById('step2').classList.add('active');
+                    
+                    const destination = formData.verify_method === 'sms' ? 'جوالك' : 'إيميلك';
+                    document.getElementById('otpSentTo').textContent = `تم إرسال الكود على ${destination}`;
+                } else {
+                    message.textContent = data.error || 'حدث خطأ';
+                    message.className = 'message error';
+                }
+            } catch (error) {
+                message.textContent = 'خطأ في الاتصال بالسيرفر';
+                message.className = 'message error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'إرسال كود التحقق';
+        });
+
+        // Step 2: Verify OTP
+        document.getElementById('verifyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('verifyBtn');
+            const message = document.getElementById('verifyMessage');
+            const code = document.getElementById('otpCode').value.trim();
+            
+            if (!code || code.length < 6) {
+                message.textContent = 'أدخل الكود كامل (6 أرقام)';
+                message.className = 'message error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'جاري التحقق...';
+            message.className = 'message';
+
+            try {
+                const response = await fetch(`${API_URL}/api/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        code: code,
+                        email: formData.email,
+                        phone: formData.phone,
+                        verify_method: formData.verify_method
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Move to step 3
+                    document.getElementById('verifyStep').classList.add('hidden');
+                    document.getElementById('personalizeStep').classList.remove('hidden');
+                    document.getElementById('step2').classList.remove('active');
+                    document.getElementById('step2').classList.add('done');
+                    document.getElementById('step3').classList.add('active');
+                } else {
+                    message.textContent = data.error || 'الكود غير صحيح';
+                    message.className = 'message error';
+                    btn.disabled = false;
+                    btn.textContent = 'تحقق';
+                }
+            } catch (error) {
+                message.textContent = 'خطأ في الاتصال بالسيرفر';
+                message.className = 'message error';
+                btn.disabled = false;
+                btn.textContent = 'تحقق';
+            }
+        });
+
+        // Resend OTP
+        document.getElementById('resendBtn').addEventListener('click', async function() {
+            const message = document.getElementById('verifyMessage');
+            this.textContent = 'جاري الإرسال...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/resend`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: formData.email,
+                        phone: formData.phone,
+                        name: formData.name,
+                        verify_method: formData.verify_method
+                    })
+                });
+                
+                const data = await response.json();
+                message.textContent = data.message;
+                message.className = data.success ? 'message success' : 'message error';
+            } catch (error) {
+                message.textContent = 'خطأ في الاتصال';
+                message.className = 'message error';
+            }
+            
+            this.textContent = 'إعادة إرسال';
+        });
+
+        // Auto-focus OTP input
+        document.getElementById('otpCode').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Step 3: Personalization
+        document.getElementById('personalizeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('personalizeBtn');
+            const message = document.getElementById('personalizeMessage');
+            
+            const nickname = document.getElementById('nickname').value.trim();
+            const secretaryName = document.getElementById('secretaryName').value.trim();
+            
+            if (!nickname || !secretaryName) {
+                message.textContent = 'الرجاء تعبئة الحقلين';
+                message.className = 'message error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'جاري الحفظ...';
+
+            try {
+                const response = await fetch(`${API_URL}/api/personalize`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: formData.phone,
+                        email: formData.email,
+                        nickname: nickname,
+                        secretary_name: secretaryName,
+                        platform: formData.platform
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    message.textContent = '✓ تم! جاري تحويلك لسكرتيرك...';
+                    message.className = 'message success';
+                    
+                    // Redirect to platform with deep link
+                    setTimeout(() => {
+                        if (formData.platform === 'whatsapp') {
+                            window.location.href = 'https://wa.me/14247880551?text=' + encodeURIComponent('هلا، أنا ' + nickname);
+                        } else {
+                            // Telegram deep link with code - bot will auto-recognize user
+                            window.location.href = 'https://t.me/Lumi_aio_bot?start=' + data.link_code;
+                        }
+                    }, 1500);
+                } else {
+                    message.textContent = data.error || 'حدث خطأ';
+                    message.className = 'message error';
+                    btn.disabled = false;
+                    btn.textContent = 'يلا نبدأ! 🚀';
+                }
+            } catch (error) {
+                message.textContent = 'خطأ في الاتصال بالسيرفر';
+                message.className = 'message error';
+                btn.disabled = false;
+                btn.textContent = 'يلا نبدأ! 🚀';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi - Coming Soon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d0f;
+            --emerald: #1a5c4c;
+            --emerald-light: #2a7a66;
+            --sand: #c9b896;
+            --gold: #b8975c;
+            --text-white: #f4f1eb;
+            --text-soft: #c4bfb4;
+            --text-muted: #8a857a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-white);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        html {
+            height: -webkit-fill-available;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            top: -200px;
+            right: -200px;
+            background: var(--emerald);
+        }
+
+        .glow-2 {
+            bottom: -200px;
+            left: -200px;
+            background: var(--gold);
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--sand) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .coming-soon {
+            font-size: 1.5rem;
+            color: var(--text-soft);
+            margin-bottom: 3rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 400px;
+        }
+
+        .code-section {
+            margin-top: 2rem;
+        }
+
+        .code-label {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .code-input-wrapper {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .code-input {
+            padding: 1rem 1.5rem;
+            font-size: 16px; /* Prevents iOS zoom */
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--text-white);
+            text-align: center;
+            width: 180px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            -webkit-appearance: none;
+            appearance: none;
+            touch-action: manipulation;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--emerald);
+            background: rgba(26, 92, 76, 0.1);
+        }
+
+        .code-input::placeholder {
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        .submit-btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(26, 92, 76, 0.3);
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-msg.show {
+            opacity: 1;
+        }
+
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-deep);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .success-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-text {
+            font-size: 2rem;
+            color: var(--emerald-light);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--sand);
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 3rem;
+            }
+            .coming-soon {
+                font-size: 1.2rem;
+            }
+            .code-input {
+                width: 100%;
+                padding: 1.2rem 1.5rem;
+                font-size: 18px;
+                min-height: 56px;
+            }
+            .submit-btn {
+                width: 100%;
+                padding: 1.2rem 2rem;
+                min-height: 56px;
+            }
+            .code-input-wrapper {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="container">
+        <div class="logo">LUMI</div>
+        <div class="coming-soon">Coming soon...</div>
+        <p class="subtitle">Wherever you are, at your service anytime<br><span style="font-size: 0.85em; opacity: 0.8;">Wherever you are, whatever you need</span></p>
+        <div style="text-align: center; margin: 1rem 0;">
+            <a href="index_ar.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">العربية</a>
+        </div>
+
+        <div class="code-section">
+            <label class="code-label">Have an access code?</label>
+            <div class="code-input-wrapper">
+                <input 
+                    type="text" 
+                    inputmode="text"
+                    class="code-input" 
+                    id="accessCode" 
+                    placeholder="Code"
+                    maxlength="10"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                >
+                <button class="submit-btn" onclick="checkCode()">Enter</button>
+            </div>
+            <p class="error-msg" id="errorMsg">Code غير صحيح</p>
+        </div>
+    </div>
+
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-text">✓ جاري التحويل...</div>
+    </div>
+
+    <div class="footer">
+        <a href="mailto:team@lumiaio.com">team@lumiaio.com</a>
+    </div>
+
+    <script>
+        const VALID_CODE = 'na88';
+        
+        document.getElementById('accessCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkCode();
+            }
+        });
+
+        function checkCode() {
+            const input = document.getElementById('accessCode');
+            const errorMsg = document.getElementById('errorMsg');
+            const code = input.value.trim().toLowerCase();
+            
+            if (code === VALID_CODE) {
+                errorMsg.classList.remove('show');
+                document.getElementById('successOverlay').classList.add('show');
+                
+                setTimeout(() => {
+                    window.location.href = '/main_site.html';
+                }, 1000);
+            } else {
+                errorMsg.classList.add('show');
+                input.style.borderColor = '#e74c3c';
+                
+                setTimeout(() => {
+                    input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

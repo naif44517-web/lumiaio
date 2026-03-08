@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi - Your AI Personal Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d0f;
+            --emerald: #1a5c4c;
+            --emerald-light: #2a7a66;
+            --sand: #c9b896;
+            --sand-muted: #a69d88;
+            --gold: #b8975c;
+            --text-white: #f4f1eb;
+            --text-soft: #c4bfb4;
+            --text-muted: #8a857a;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-white);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* ========== CINEMATIC BACKGROUND ========== */
+        .hero-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: 
+                linear-gradient(180deg, 
+                    rgba(10, 13, 15, 0.75) 0%,
+                    rgba(10, 13, 15, 0.85) 50%,
+                    rgba(10, 13, 15, 0.95) 100%),
+                url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=60') center/cover no-repeat;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glow-1 {
+            width: 600px;
+            height: 600px;
+            top: -200px;
+            right: -100px;
+            background: var(--emerald);
+            opacity: 0.08;
+        }
+
+        .glow-2 {
+            width: 500px;
+            height: 500px;
+            bottom: 30%;
+            left: -150px;
+            background: var(--sand);
+            opacity: 0.05;
+        }
+
+        /* ========== CONTENT WRAPPER ========== */
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 18px 6%;
+            background: rgba(10, 13, 15, 0.85);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--text-white);
+        }
+
+        .logo-mark {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--emerald), var(--emerald-light));
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-cta {
+            background: var(--emerald);
+            color: var(--text-white);
+            padding: 11px 26px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--emerald-light);
+            transform: translateY(-2px);
+        }
+
+        /* ========== SECTIONS BASE ========== */
+        section {
+            padding: 100px 6%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ========== 1. HERO ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 24px;
+            color: var(--text-white);
+        }
+
+        .hero-content h1 span {
+            color: var(--sand);
+        }
+
+        .hero-sub {
+            font-size: 1.2rem;
+            color: var(--text-soft);
+            margin-bottom: 40px;
+            line-height: 1.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: #fff;
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(37, 211, 102, 0.25);
+        }
+
+        .btn-telegram {
+            background: var(--glass-bg);
+            color: var(--text-white);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-telegram:hover {
+            background: var(--glass-hover);
+            border-color: var(--sand-muted);
+        }
+
+        /* Chat Preview */
+        .chat-preview {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 400px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .chat-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--emerald), var(--emerald-light));
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .chat-status {
+            font-size: 0.85rem;
+            color: var(--emerald-light);
+        }
+
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-height: 120px;
+            position: relative;
+        }
+
+        .chat-scenario {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .chat-scenario.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .message-user {
+            background: var(--emerald);
+            align-self: flex-start;
+            border-bottom-right-radius: 6px;
+        }
+
+        .message-lumi {
+            background: rgba(201, 184, 150, 0.15);
+            border: 1px solid rgba(201, 184, 150, 0.2);
+            align-self: flex-end;
+            border-bottom-left-radius: 6px;
+        }
+
+        /* ========== 2. SERVICES ========== */
+        .services {
+            background: rgba(10, 13, 15, 0.6);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--text-soft);
+            font-size: 1.15rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .service-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 28px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            background: var(--glass-hover);
+            border-color: var(--emerald);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--emerald), var(--emerald-light));
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+        }
+
+        .service-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-white);
+        }
+
+        .service-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* ========== 3. HOW IT WORKS ========== */
+        .how-it-works {
+            text-align: center;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-top: 60px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 200px;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--glass-bg);
+            border: 2px solid var(--emerald);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-icon {
+            background: var(--emerald);
+            transform: scale(1.05);
+        }
+
+        .step h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* ========== 4. REAL-LIFE SCENARIOS ========== */
+        .scenarios {
+            background: rgba(10, 13, 15, 0.6);
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 50px;
+        }
+
+        .scenario-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 28px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--sand-muted);
+            transform: translateX(-4px);
+        }
+
+        .scenario-emoji {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .scenario-content {
+            flex: 1;
+        }
+
+        .scenario-message {
+            background: rgba(201, 184, 150, 0.1);
+            border-right: 3px solid var(--sand);
+            padding: 12px 16px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: var(--text-white);
+        }
+
+        .scenario-result {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ========== 5. TRUST ========== */
+        .trust {
+            text-align: center;
+            padding: 80px 6%;
+        }
+
+        .trust-text {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.3rem;
+            color: var(--text-soft);
+            line-height: 2;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 40px;
+        }
+
+        .trust-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trust-badge-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+        }
+
+        .trust-badge span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ========== 6. FINAL CTA ========== */
+        .final-cta {
+            text-align: center;
+            padding: 120px 6%;
+        }
+
+        .final-cta h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .final-cta p {
+            color: var(--text-soft);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .final-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            padding: 30px 6%;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                text-align: center;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .chat-preview {
+                margin: 0 auto;
+            }
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 70px 5%;
+            }
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .hero-sub {
+                font-size: 1.1rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            .steps {
+                flex-direction: column;
+                gap: 40px;
+            }
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            .trust-badges {
+                flex-direction: column;
+                gap: 24px;
+            }
+            .final-cta h2 {
+                font-size: 2.2rem;
+            }
+            .final-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="hero-background"></div>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div class="content">
+        <!-- Header -->
+        <header>
+            <nav>
+                <div class="logo">
+                    <div class="logo-mark">✨</div>
+                    Lumi
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <a href="main_site_ar.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">العربية</a>
+                    <a href="auth.html" class="nav-cta">Get Started</a>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <!-- 1. HERO -->
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-grid">
+                        <div class="hero-content">
+                            <h1>Send a message.<br><span>and we take it from there.</span></h1>
+                            <p class="hero-sub">Wherever you are, whatever you need<br>Documents. Reminders. Decisions. Your daily life — organized.</p>
+                            <div class="hero-buttons">
+                                <a href="auth.html" class="btn btn-whatsapp">
+                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                    Start on WhatsApp
+                                </a>
+                                <a href="javascript:alert('Coming soon...')" class="btn btn-telegram" style="opacity:0.6">
+                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                                    Telegram
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="chat-preview">
+                            <div class="chat-header">
+                                <div class="chat-avatar">✨</div>
+                                <div>
+                                    <div class="chat-name">Lumi</div>
+                                    <div class="chat-status">متصل الآن</div>
+                                </div>
+                            </div>
+                            <div class="chat-messages">
+                                <!-- Scenario 1: Burger -->
+                                <div class="chat-scenario active">
+                                    <div class="message message-user">Best burger near me?</div>
+                                    <div class="message message-lumi">🍔 تم 😏 أقوى برجر قريب منك هذا المكان 👇</div>
+                                </div>
+                                <!-- Scenario 2: Movie -->
+                                <div class="chat-scenario">
+                                    <div class="message message-user">I want a good action movie</div>
+                                    <div class="message message-lumi">🎬 حماس؟ تمام 😄 هذا فيلم أكشن قوي جدًا 👇</div>
+                                </div>
+                                <!-- Scenario 3: Reminder -->
+                                <div class="chat-scenario">
+                                    <div class="message message-user">Remind me tomorrow at 10</div>
+                                    <div class="message message-lumi">مضبوط 👌 بذكرك بكرا الساعة 10.</div>
+                                </div>
+                                <!-- Scenario 4: PowerPoint Summary -->
+                                <div class="chat-scenario">
+                                    <div class="message message-user">Summarize marketing basics in PowerPoint</div>
+                                    <div class="message message-lumi">📊 خلصت التلخيص 👌 عرض احترافي جاهز 👇</div>
+                                </div>
+                                <!-- Scenario 5: Match -->
+                                <div class="chat-scenario">
+                                    <div class="message message-user">Who won the match?</div>
+                                    <div class="message message-lumi">⚽ فاز الهلال 2–1 👌 مباراة قوية اليوم.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. SERVICES -->
+            <section class="services" id="services">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>وش يقدر لومي يسوي لك؟</h2>
+                        <p>كل اللي تحتاجه، برسالة وحدة</p>
+                    </div>
+
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-icon">📝</div>
+                            <h3>تلخيص Word احترافي</h3>
+                            <p>ملخصات احترافية جاهزة في ثواني.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">📊</div>
+                            <h3>تلخيص Excel احترافي</h3>
+                            <p>بيانات ملخصة، جداول منظمة — جاهز لك.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">📽️</div>
+                            <h3>عروض PowerPoint ملخصة</h3>
+                            <p>ملخصات تقديمية احترافية.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">⏰</div>
+                            <h3>تذكيرات</h3>
+                            <p>Set the time. and we take it from there.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🎬</div>
+                            <h3>أفلام ومسلسلات</h3>
+                            <p>اقتراحات مع التقييمات والتفاصيل.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🍽️</div>
+                            <h3>مطاعم وأماكن</h3>
+                            <p>أفضل الخيارات قريب منك.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🌤️</div>
+                            <h3>الطقس</h3>
+                            <p>حالة الجو الحالية والتوقعات.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🔍</div>
+                            <h3>بحث وإجابات</h3>
+                            <p>إجابات واضحة. بسرعة.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">💬</div>
+                            <h3>محادثة ٢٤/٧</h3>
+                            <p>موجود دائماً، أي وقت تحتاجه.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🏋️</div>
+                            <h3>المدرب الشخصي</h3>
+                            <p>تمارين وتغذية مخصصة لك.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">💌</div>
+                            <h3>دعوات ومناسبات</h3>
+                            <p>ارسل الدعوة. يذكّرك فيها.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">📞</div>
+                            <h3>حجز مطاعم</h3>
+                            <p>لومي يحجز لك.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">⚽</div>
+                            <h3>أخبار الرياضة</h3>
+                            <p>مستجدات فريقك أول بأول.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🎥</div>
+                            <h3>فيديوهات</h3>
+                            <p>شروحات وتعليم.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🗣️</div>
+                            <h3>اللهجات</h3>
+                            <p>يرد بلهجتك تلقائياً.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. HOW IT WORKS -->
+            <section class="how-it-works">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>كيف يشتغل؟</h2>
+                    </div>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-icon">💬</div>
+                            <h3>ارسل رسالة</h3>
+                            <p>اكتب اللي تبيه بأي طريقة</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">✨</div>
+                            <h3>لومي يفهم</h3>
+                            <p>يفهم طلبك من أول مرة</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">✓</div>
+                            <h3>يجيك جاهز</h3>
+                            <p>النتيجة توصلك مباشرة</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. REAL-LIFE SCENARIOS -->
+            <section class="scenarios">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>يومك، مرتب</h2>
+                        <p>أمثلة حقيقية من الاستخدام اليومي</p>
+                    </div>
+                    <div class="scenarios-grid">
+                        <div class="scenario-card">
+                            <div class="scenario-emoji">📊</div>
+                            <div class="scenario-content">
+                                <div class="scenario-message">"لخص لي معلومات عن التسويق في PowerPoint"</div>
+                                <div class="scenario-result">→ تلخيص احترافي جاهز في دقيقة</div>
+                            </div>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-emoji">🍔</div>
+                            <div class="scenario-content">
+                                <div class="scenario-message">"وين أفضل مطعم برجر قريب؟"</div>
+                                <div class="scenario-result">→ أفضل ٣ خيارات مع التقييمات</div>
+                            </div>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-emoji">⏰</div>
+                            <div class="scenario-content">
+                                <div class="scenario-message">"ذكرني بالاجتماع بكرا الساعة ٩"</div>
+                                <div class="scenario-result">→ تذكير يوصلك بالضبط</div>
+                            </div>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-emoji">🎬</div>
+                            <div class="scenario-content">
+                                <div class="scenario-message">"ابي فيلم أكشن حلو"</div>
+                                <div class="scenario-result">→ اقتراحات مع التقييمات</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. TRUST -->
+            <section class="trust">
+                <div class="container">
+                    <p class="trust-text">بدون تطبيقات. بدون لوحات تحكم. بدون تعقيد.<br>بس رسالة.</p>
+                    <div class="trust-badges">
+                        <div class="trust-badge">
+                            <div class="trust-badge-icon">🕐</div>
+                            <span>متاح ٢٤/٧</span>
+                        </div>
+                        <div class="trust-badge">
+                            <div class="trust-badge-icon">🔒</div>
+                            <span>خاص وآمن</span>
+                        </div>
+                        <div class="trust-badge">
+                            <div class="trust-badge-icon">⚡</div>
+                            <span>رد فوري</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. FINAL CTA -->
+            <section class="final-cta">
+                <div class="container">
+                    <h2>جاهز وقت ما تبي.</h2>
+                    <p>أنت أصلاً تراسل طول اليوم.<br>الحين راسل أحد يرد ويساعد.</p>
+                    <div class="final-buttons">
+                        <a href="auth.html" class="btn btn-whatsapp">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            ابدأ على واتساب
+                        </a>
+                        <a href="javascript:alert('Coming soon...')" class="btn btn-telegram" style="opacity:0.6">تيليجرام</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2026 Lumi — Made in Saudi Arabia</p>
+        </footer>
+    </div>
+    <script>
+        // Show user name if logged in
+        (function() {
+            const token = localStorage.getItem('lumi_token');
+            const userStr = localStorage.getItem('lumi_user');
+            
+            if (token && userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    const userName = user.nickname || user.name || 'المستخدم';
+                    const navBtn = document.querySelector('.nav-cta');
+                    if (navBtn) {
+                        navBtn.textContent = `مرحباً ${userName}`;
+                        navBtn.href = '/dashboard.html';
+                    }
+                } catch (e) {}
+            }
+        })();
+
+        // Chat scenario rotation - 2000ms interval
+        (function() {
+            const scenarios = document.querySelectorAll('.chat-scenario');
+            let current = 0;
+            
+            function rotateScenario() {
+                scenarios[current].classList.remove('active');
+                current = (current + 1) % scenarios.length;
+                scenarios[current].classList.add('active');
+            }
+            
+            setInterval(rotateScenario, 2000);
+        })();
+    </script>
+</body>
+</html>

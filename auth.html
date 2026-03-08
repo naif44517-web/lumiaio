@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi - Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0d0f;
+            --emerald: #1a5c4c;
+            --emerald-light: #2a7a66;
+            --sand: #c9b896;
+            --gold: #b8975c;
+            --text-white: #f4f1eb;
+            --text-soft: #c4bfb4;
+            --text-muted: #8a857a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-1 { top: -200px; right: -200px; background: var(--emerald); }
+        .glow-2 { bottom: -200px; left: -200px; background: var(--gold); }
+
+        .auth-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--sand) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        .logo p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: var(--sand);
+            border-bottom-color: var(--sand);
+        }
+        .tab:hover {
+            color: var(--text-soft);
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+        .input-group label {
+            display: block;
+            color: var(--text-soft);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.875rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--emerald);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .phone-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .phone-input select {
+            width: 100px;
+        }
+        .phone-input input {
+            flex: 1;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--emerald);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .btn:hover {
+            background: var(--emerald-light);
+            transform: translateY(-1px);
+        }
+
+        .forgot-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .forgot-link a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .forgot-link a:hover {
+            color: var(--sand);
+        }
+
+        .message {
+            padding: 0.875rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .message.success {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+        .message.error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        @media (max-width: 480px) {
+            .auth-box { padding: 1.5rem; }
+            .logo h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="auth-box">
+        <div class="logo">
+            <h1>LUMI</h1>
+            <p id="subtitle">سجّل دخولك وادخل لسكرتيرك</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('login')">Sign Up الدخول</button>
+            <button class="tab" onclick="switchTab('register')">حساب جديد</button>
+        </div>
+
+        <!-- Message -->
+        <div id="message" class="message"></div>
+
+        <!-- Login Tab -->
+        <div id="login-content" class="tab-content active">
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="email@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn">دخول</button>
+            </form>
+            <div class="forgot-link">
+                <a href="#" onclick="alert('قريباً...'); return false;">نسيت Password؟</a>
+            </div>
+        </div>
+
+        <!-- Register Tab -->
+        <div id="register-content" class="tab-content">
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Full Name" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" placeholder="email@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <div class="phone-input">
+                        <select id="reg-country">
+                            <option value="+966">+966</option>
+                            <option value="+971">+971</option>
+                            <option value="+965">+965</option>
+                            <option value="+973">+973</option>
+                            <option value="+968">+968</option>
+                        </select>
+                        <input type="tel" id="reg-phone" placeholder="5xxxxxxxx" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Password (At least 8 characters)</label>
+                    <input type="password" id="reg-password" placeholder="••••••••" minlength="8" required>
+                </div>
+                <button type="submit" class="btn">Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://api.lumiaio.com/api';
+
+        function switchTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('login-content').classList.add('active');
+                document.getElementById('subtitle').textContent = 'سجّل دخولك وادخل لسكرتيرك';
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('register-content').classList.add('active');
+                document.getElementById('subtitle').textContent = 'معك في وقت تحت أمرك في أي وقت';
+            }
+
+            // Clear message
+            document.getElementById('message').style.display = 'none';
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            msg.style.display = 'block';
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch(API_URL + '/signin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.token) {
+                    localStorage.setItem('lumi_token', data.token);
+                    localStorage.setItem('lumi_user', JSON.stringify(data.user));
+                    showMessage('تم Sign Up الدخول ✓', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1000);
+                } else {
+                    showMessage(data.error || 'خطأ في البريد أو Password', 'error');
+                }
+            } catch (err) {
+                showMessage('An error occurred، Try again', 'error');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const countryCode = document.getElementById('reg-country').value;
+            const phone = document.getElementById('reg-phone').value;
+            const password = document.getElementById('reg-password').value;
+
+            const fullPhone = countryCode + phone;
+
+            try {
+                const res = await fetch(API_URL + '/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone: fullPhone,
+                        password
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showMessage('Account created successfully! جاري Sign Up الدخول...', 'success');
+                    
+                    // Auto login
+                    setTimeout(async () => {
+                        const loginRes = await fetch(API_URL + '/signin', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+                        
+                        const loginData = await loginRes.json();
+                        
+                        if (loginRes.ok && loginData.token) {
+                            localStorage.setItem('lumi_token', loginData.token);
+                            localStorage.setItem('lumi_user', JSON.stringify(loginData.user));
+                            window.location.href = '/dashboard.html';
+                        }
+                    }, 1500);
+                } else {
+                    showMessage(data.error || 'An error occurred', 'error');
+                }
+            } catch (err) {
+                showMessage('An error occurred، Try again', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
